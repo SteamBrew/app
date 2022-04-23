@@ -1,98 +1,50 @@
-import fetch from 'node-fetch';
-import WebSocket from 'ws';
+import dotenv from "dotenv";
+import server from './src/server.js';
 
-const DEV = true;
-const ip = DEV?"192.168.1.138":"127.0.0.1";
+dotenv.config()
 
-const TabUrls = {
-    'https://steamloopback.host/routes/library/home': 'MainUI',
-    'about:blank?browserviewpopup=1&requestid=4': 'Toast',
-    'about:blank?browserviewpopup=1&requestid=2': 'MainMenu',
-    'about:blank?browserviewpopup=1&requestid=3': 'QuickAccess',
-}
+server()
 
-const TabEnum = {
-    MainUI: 'MainUI',
-    Toast: 'Toast',
-    MainMenu: 'MainMenu',
-    QuickAccess: 'QuickAccess',
-}
 
-function sleep(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-}
+// // not unique
+// const TabUrls = {
+//     'https://steamloopback.host/routes/library/home': 'MainUI',
+//     'about:blank?browserviewpopup=1&requestid=4': 'Toast',
+//     'about:blank?browserviewpopup=1&requestid=2': 'MainMenu',
+//     'about:blank?browserviewpopup=1&requestid=3': 'QuickAccess',
+// }
 
-class Tab {
-    /**
-     * tabData:
-     * @param {string} description 
-     * @param {string} devtoolsFrontendUrl 
-     * @param {string} id
-     * @param {string} title 
-     * @param {string} type 
-     * @param {string} url 
-     * @param {string} webSocketDebuggerUrl 
-     *  
-     */
-    constructor(tabData) {
-        this.page = TabUrls[tabData.url]
-        this.websocketReady = false;
-        this.websocket = new WebSocket(tabData.webSocketDebuggerUrl);
-        this.websocket.on('open', () => {
-            console.log(`Websocket connected for ${this.page}`)
-            this.websocketReady = true
-        });
 
-    }
+
+// async function main() {
+//     const tabs = new TabManager()
+
+//     // TODO load plugins first
+
+//     // TODO, need to loop tab finding if any not found possibly
+
+//     const tabsFound = await getAvailableTabs();
+//     // console.log(tabsFound)
+//     tabsFound.forEach(tabData => {
+//         tabs.create(tabData)
+//     })
     
-    async sendCode() {
-        while (!this.websocketReady) {
-            console.log("waiting...")
-            await sleep(1000)   
-        }
-        this.websocket.send(JSON.stringify({
-            id: 1,
-            method: "Runtime.evaluate",
-            params: {
-                expression: `
-                ()=>{
-                    console.log("hi");
-                    return 'TESTRESPONSE'
-                }`,
-                userGesture: true
-            }
-        }));
-    }
-}
+//     const mainTab = tabs.get(TabEnum.MainUI)
+//     if (mainTab) {
+//         mainTab.sendCode(`
+//         console.log("injecting keyboard");
+//         if (!document.getElementById("${KEYBOARD_STYLE_ID}")) {
+//             const styleElem = document.createElement("style");
+//             styleElem.setAttribute("id", "${KEYBOARD_STYLE_ID}")
+//             document.head.appendChild(styleElem);
+//             console.log("created stlye")
+//         } else {
+//             console.log("keyboard style exists not creating")
+//         }
+//         `);
+//     } else {
+//         console.log('could not locate tab')
+//     }
+// }
 
-async function getAvailableTabs() {
-    // TODO this could fail
-    const response = await fetch(`http://${ip}:3000/json`);
-    return response.json();
-} 
-
-
-
-async function main() {
-    const loadedTabs = {}
-
-    // TODO load plugins first
-
-    // TODO, need to loop tab finding if any not found possibly
-
-    const tabsFound = await getAvailableTabs();
-    console.log(tabsFound)
-    tabsFound.forEach(tabData => {
-        const page = TabUrls[tabData.url];
-        if (page) {
-            console.log(`Found page: ${page}`)
-            loadedTabs[page]= new Tab(tabData)
-        } 
-    })
-    
-    loadedTabs[TabEnum.QuickAccess].sendCode();
-}
-
-main()
+// main()

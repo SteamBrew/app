@@ -23,6 +23,14 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
+app.get('/keyboard/get', async (req, res) => {
+    console.log('getting themes')
+    res.json({
+        themes: main.keyboard.availiableKeyboardThemes,
+        current: main.keyboard.currentTheme
+    })
+})
+
 app.get('/keyboard/set/:name', async (req, res) => {
     console.log(req.params)
     const theme = req.params.name

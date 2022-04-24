@@ -1,0 +1,132 @@
+.DefaultTheme{
+    --background-color: linear-gradient(45deg, #4b1d12, #6b290f) !important;
+    --key-action-button-glyph-color: #b8bcbf !important;
+    --key-focused-action-button-left-color: #5a2b10 !important;
+    --key-focused-action-button-right-color: #5a2b10 !important;
+    --key-color: #ff9558 !important;
+    --key-background-color: #ef681a36 !important;
+    --key-shift-label-color: #ff9558 !important;
+    --key-focused-shift-label-color: #5a2b10 !important;
+    --key-focused-color: #5a2b10 !important;
+    --key-focused-background-color: #f3742a5e !important;
+    --key-meta-color: #ff9558 !important;
+    --key-meta-background-color: #f3742a5e !important;
+    --key-tab-color: #ff9558 !important;
+    --key-tab-background-color: #f3742a5e !important;
+    --key-caps-color: #ff9558 !important;
+    --key-caps-background-color: #f3742a5e !important;
+    --key-shift-color: #ff9558 !important;
+    --key-shift-background-color: #f3742a5e !important;
+    --key-enter-color: #ff9558 !important;
+    --key-enter-background-color: #f3742a5e !important;
+    --key-enter-action-button-glyph-color: #5a2b10 !important;
+    --key-backspace-color: #ff9558 !important;
+    --key-backspace-background-color: #f3742a5e !important;
+    --key-spacebar-color: #EF671A !important;
+    --key-spacebar-background-color: #ef681a36 !important;
+    --key-spacer-background-color: transparent !important;
+    --key-extendedkey-background-color: #EF671A !important;
+    --key-extendedkey-color: #5a2b10 !important;
+    --key-extendedkey-focused-background-color: #5a2b10 !important;
+    --key-extendedkey-focused-color: #EF671A !important;
+    --key-extendedkey-hover-background-color: #5a2b10 !important;
+    --key-extendedkey-hover-color: #EF671A !important;
+    --key-toggleon-background-color: #ff7b2e !important;
+    --key-toggleon-color: #5a2b10 !important;
+    --key-toggleoneshot-color: #ff9558 !important;
+    --key-emoji-category-background-color: transparent !important;
+    --key-emoji-category-highlight-background-color: #8b471f !important;
+    --key-emoji-row-background-color: transparent !important;
+    --key-emoji-background-color: transparent !important;
+    --key-emoji-color: #ffffff !important;
+    --key-emoji-focused-color: #5a2b10 !important;
+    --key-emoji-focused-background-color: #ff7b2e !important;
+    --key-touched-background-color: #ff7b2e57 !important;
+    --key-touched-color: #5a2b10 !important;
+    --key-pointer-stroke-color: #ff7b2e57 !important;
+    --key-pointer-background-color: #5a2b10 !important;
+}
+.DefaultTheme.virtualkeyboard_Keyboard_45rH7{
+    border-top:1px solid #f3742a5e !important;
+}
+.DefaultTheme.virtualkeyboard_EmojiKeyboard_icETE{
+    border-top:1px solid #f3742a5e !important;
+}
+.DefaultTheme .virtualkeyboard_KeyboardKey_2KhPX{
+    box-shadow:inset 0px 0px 5px 0px #8b471f83,0px 0px 0px 1px #00000012 !important;
+    border-radius:3px !important;
+    border-top:1px solid #ff7b2e57 !important;
+    border-bottom:1px solid #5a2b10 !important;
+}
+.DefaultTheme .virtualkeyboard_KeyboardKey_2KhPX img{
+    filter:brightness(0) saturate(100%) invert(57%) sepia(35%) saturate(753%) hue-rotate(336deg) brightness(109%) contrast(101%) !important;
+}
+.DefaultTheme .virtualkeyboard_KeyboardKey_2KhPX.virtualkeyboard_ToggleOn_3Qrs- img{
+    filter:brightness(0) saturate(100%) invert(20%) sepia(12%) saturate(3314%) hue-rotate(340deg) brightness(89%) contrast(96%) !important;
+}
+.DefaultTheme .virtualkeyboard_KeyboardKey_2KhPX.virtualkeyboard_Focused_21EoN::before{
+    content:"" !important;
+    z-index:2 !important;
+    width:100% !important;
+    height:100% !important;
+    border-radius:3px !important;
+    box-shadow:0px 0px 5px 1px #ff7b2e,inset 0px 0px 8px 1px #ff7b2e !important;
+    position:absolute !important;
+    top:50% !important;
+    left:50% !important;
+    transform:translate(-50%, -50%) !important;
+    animation:virtualkeyboard_glow_2KNb- 1.5s ease-in-out 10 !important;
+}
+@keyframes virtualkeyboard_glow_2KNb-{
+    0%{
+        width:100% !important;
+        height:100% !important;
+        opacity:.8 !important;
+    }
+    50%{
+        width:100% !important;
+        height:105% !important;
+        opacity:.5 !important;
+    }
+    100%{
+        width:100% !important;
+        height:100% !important;
+        opacity:.8 !important;
+    }
+}
+.DefaultTheme .virtualkeyboard_KeyboardKey_2KhPX.virtualkeyboard_Focused_21EoN img{
+    filter:brightness(0) saturate(100%) invert(20%) sepia(12%) saturate(3314%) hue-rotate(340deg) brightness(89%) contrast(96%) !important;
+}
+.DefaultTheme .virtualkeyboard_KeyboardKey_2KhPX.virtualkeyboard_Touched_3UFQq::after{
+    content:"" !important;
+    z-index:2 !important;
+    width:100% !important;
+    height:100% !important;
+    border-radius:3px !important;
+    box-shadow:0px 0px 10px 5px #ff7b2e,inset 0px 0px 10px 5px #ff7b2e !important;
+    position:absolute !important;
+    top:50% !important;
+    left:50% !important;
+    opacity:0 !important;
+    transform:translate(-50%, -50%) !important;
+    animation:virtualkeyboard_pulse_3a046 .3s !important;
+}
+@keyframes virtualkeyboard_pulse_3a046{
+    0%{
+        width:50% !important;
+        height:50% !important;
+        opacity:1 !important;
+    }
+    100%{
+        width:120% !important;
+        height:120% !important;
+        opacity:0 !important;
+    }
+}
+.DefaultTheme .virtualkeyboard_KeyboardEmojiHeader_Qihxj img{
+    filter:brightness(0) saturate(100%) invert(57%) sepia(35%) saturate(753%) hue-rotate(336deg) brightness(109%) contrast(101%) !important;
+}
+.DefaultTheme .virtualkeyboard_KeyboardSpacer_2LxGP{
+    box-shadow:none !important;
+    border:none !important;
+}

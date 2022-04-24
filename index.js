@@ -15,6 +15,7 @@ const port = process.env.PORT || 3000
 await main.init()
 
 app.use(cors())
+app.use(express.json());
 
 app.use("/static", express.static(path.join(__dirname, 'static')));
 
@@ -48,14 +49,16 @@ app.get('/keyboard/reset', async (req, res) => {
     res.send(200)
 })
 
-// TODO find a theme somehow and save it in the custom/keybaord_themes dir
-app.get('/keyboard/install', async (req, res) => {
-    res.send(200)
-})
-
-// TODO delete theme and set current theme back to default
-app.get('/keyboard/install', async (req, res) => {
-    res.send(200)
+app.post('/keyboard/install', async (req, res) => {
+    const {url, name} = req.body
+    if (url && name) {
+        const result = await main.keyboard.installTheme({url, name})
+        if (result) {
+            res.send(200)
+        } else {
+            res.send(500)
+        }
+    }
 })
 
 app.get('/keyboard/reload_themes', async (req, res) => {

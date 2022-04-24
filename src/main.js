@@ -1,9 +1,13 @@
 // encapulates all logic
 import fs from 'fs';
 import fetch from "node-fetch";
+import path from "path";
+import { fileURLToPath } from 'url';
 import WebSocket from 'ws';
 import sleep from './helpers/sleep.js';
 import localStorage from './localStorage.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const LocalStorageKeys = {
     KEYBOARD_CURRENT_THEME: 'KEYBOARD_CURRENT_THEME'
@@ -260,6 +264,30 @@ class Keyboard {
     setCurrentTheme(name) {
         this.currentTheme = name
         localStorage.setItem(LocalStorageKeys.KEYBOARD_CURRENT_THEME, name)
+    }
+
+    /**
+     * 
+     * @param {Object} info
+     * @param {Object} info.name
+     * @param {Object} info.url
+     *  
+     */
+    async installTheme(info) {
+        const {name, url} = info
+        let css;
+        try {
+            const result = await fetch(url);
+            css = await result.text()
+        } catch (e) {
+            console.log(e)
+            return false
+        }
+        await fs.writeFileSync(
+            path.join(__dirname, '..', 'custom', 'keyboard_themes', (name+".css")),
+            css    
+        )
+        return true
     }
 
     async setTheme(name) {

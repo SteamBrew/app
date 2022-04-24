@@ -6,6 +6,7 @@ import './App.css';
 
 function App() {
   const [themes, setThemes] = useState([]);
+  const [installableThemes, setInstallableThemes] = useState([]);
   const [selectorTheme, setSelectorTheme] = useState('');
   const [currentTheme, setCurrentTheme] = useState('');
 
@@ -18,9 +19,17 @@ function App() {
           setThemes(result.themes);
           setCurrentTheme(result.current);
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
+        (error) => {
+          console.log(error)
+        }
+      )
+    fetch("http://localhost:3002/keyboard/themes")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          console.log(result)
+          setInstallableThemes(result);
+        },
         (error) => {
           console.log(error)
         }
@@ -38,6 +47,9 @@ function App() {
     }, (error) => {
       console.log(error)
     })
+  }
+
+  const installTheme = () => {
 
   }
 
@@ -56,7 +68,11 @@ function App() {
       </Button>
 
       <div>
-      <Form.Select aria-label="Default select example" onChange={handleSelectionChange} defaultValue='Default'>
+        <p>Select theme:</p>
+      <Form.Select 
+        aria-label="Default select example" 
+        onChange={handleSelectionChange} 
+        defaultValue={currentTheme}>
 
         {
           themes.map(name => {
@@ -66,6 +82,20 @@ function App() {
         </Form.Select>
         <Button onClick={setTheme}>Select</Button>
       </div>
+
+      <h1>Find new themes</h1>
+      {
+        installableThemes.map(theme => (
+          <div>
+            <p>{theme.name}</p>
+            {
+              themes.includes(theme.name) ? 
+                <Button>Installed</Button> :
+                <Button>Install</Button> 
+            }
+          </div>
+        ))
+      }
     </div>
   );
 }

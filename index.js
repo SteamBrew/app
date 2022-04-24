@@ -74,7 +74,7 @@ app.get('/internal/keyboard/ready', async (req, res) => {
     res.send(200)
 })
 
-app.use("/static/*", (req, res, next) => {
+app.use("/static/*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "manager/build", "index.html"))
 })
 

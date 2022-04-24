@@ -17,7 +17,7 @@ await main.init()
 app.use(cors())
 app.use(express.json());
 
-app.use("/static", express.static(path.join(__dirname, 'static')));
+app.use("/static", express.static(path.join(__dirname, 'manager/build')));
 
 app.get('/', (req, res) => {
     console.log("revieved message")
@@ -73,6 +73,11 @@ app.get('/internal/keyboard/ready', async (req, res) => {
     await main.keyboard.loadCurrentTheme()
     res.send(200)
 })
+
+app.use("/static/*", (req, res, next) => {
+    res.sendFile(path.resolve(__dirname, "manager/build", "index.html"))
+})
+
 
 app.listen(port, () => {
     console.log(`Listening ${port}`)

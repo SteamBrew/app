@@ -16,7 +16,7 @@ class Main {
         ])
         // this.keyboard = new Keyboard(this.tabs.get(TabEnum.MainUI))
         // await this.keyboard.init()
-        this.keyboard = this.tabs.get("SP").keyboard
+        this.keyboard = this.tabs.get(PageEnum.MainUI).keyboard
     }
 
 }

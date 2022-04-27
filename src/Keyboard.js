@@ -1,8 +1,9 @@
 import fs from 'fs'
 import fetch from 'node-fetch'
 import path from 'path'
+import { v4 } from 'uuid'
 import {
-    KEYBOARD_STYLE_ID, KEYBOARD_THEME_DIR
+    KEYBOARD_STYLE_ID, KEYBOARD_THEME_DB, KEYBOARD_THEME_DIR, __dirname
 } from "./constants.js"
 import { LocalStorageKeys } from './enums.js'
 import localStorage from "./localStorage.js"
@@ -17,10 +18,63 @@ const getKeyboardThemes = () => {
     return KeyboardThemes
 }
 
+class KeyBoardStore {
+    // currently using an object using _id for key for easy access by id 
+    constructor() {
+        this.themes = JSON.parse(localStorage.getItem(KEYBOARD_THEME_DB)) || {"0": {_id: "0", name: "Default"}}
+    }
+
+    save() {
+        localStorage.setItem(KEYBOARD_THEME_DB, JSON.stringify(this.themes))
+    }
+
+    findById(id) {
+        return this.themes[id] || null
+    }
+    
+    findByName(name) {
+        for (const _id in this.themes) {
+            if (Object.hasOwnProperty.call(this.themes, _id)) {
+                const theme = this.themes[_id];
+                if (theme.name == name) {
+                    return theme
+                }
+            }
+        }
+    }
+    
+    getAll() {
+        let themes = []
+        for (const _id in this.themes) {
+            if (Object.hasOwnProperty.call(this.themes, _id)) {
+                themes.push(this.themes[_id]);
+            }
+        }
+        return themes
+    }
+
+    add({ name, _id }) {
+        if (this.findById(_id) == null) {
+            this.themes[_id] = {
+                _id,
+                name
+            }
+            this.save()
+            return this.themes[_id]
+        }
+        return null
+    }
+
+    delete(_id) {
+        delete this.themes[_id]
+    }
+}
+
 class Keyboard {
     constructor(mainTab) {
-        this.availiableKeyboardThemes = getKeyboardThemes()
-        this.currentTheme = localStorage.getItem(LocalStorageKeys.KEYBOARD_CURRENT_THEME) 
+        this.themeStore = new KeyBoardStore()
+        // _id of theme in use
+        this.currentTheme = localStorage.getItem(LocalStorageKeys.KEYBOARD_CURRENT_THEME) || "0"
         this.canModifyKeyboard = false
         this.mainTab = mainTab
     }
@@ -52,14 +106,9 @@ class Keyboard {
         }
     }
 
-    reloadKnownThemes() {
-        this.availiableKeyboardThemes = getKeyboardThemes()
-        console.log(this.availiableKeyboardThemes)
-    }
-
-    setCurrentTheme(name) {
-        this.currentTheme = name
-        localStorage.setItem(LocalStorageKeys.KEYBOARD_CURRENT_THEME, name)
+    setCurrentTheme(_id) {
+        this.currentTheme = _id
+        localStorage.setItem(LocalStorageKeys.KEYBOARD_CURRENT_THEME, _id)
     }
 
     /**
@@ -70,8 +119,13 @@ class Keyboard {
      *  
      */
     async installTheme(info) {
-        const {name, url} = info
+        const {_id, name, url} = info
         let css;
+        
+        if (this.themeStore.findById(_id)) {
+            // TODO add updating theme
+            return false
+        }
         try {
             const result = await fetch(url);
             css = await result.text()
@@ -79,29 +133,41 @@ class Keyboard {
             console.log(e)
             return false
         }
+
+        let id;
+        
+        if (!_id) {
+            // manually provided
+            id = `manual_${v4()}`
+        } else {
+            id = _id
+        }
+
+        this.themeStore.add({_id: id, name})
+
         await fs.writeFileSync(
-            path.join(__dirname, '..', 'custom', 'keyboard_themes', (name+".css")),
+            path.join(__dirname, '..', 'custom', 'keyboard_themes', (`${id}.css`)),
             css    
         )
         return true
     }
 
-    async setTheme(name) {
-        if (name && this.availiableKeyboardThemes.includes(name)) {
+    async setTheme(id) {
+        if (id && this.themeStore.findById(id)) {
             // TODO load theme css
-            fs.readFile(KEYBOARD_THEME_DIR+"/"+name+".css", 'utf-8', (err, data) => {
+            fs.readFile(KEYBOARD_THEME_DIR+"/"+id+".css", 'utf-8', (err, data) => {
                 if (err) throw err;
                 this.mainTab.sendCode(`LOAD_THEME(\`${data}\`)`)
-                this.setCurrentTheme(name)
+                this.setCurrentTheme(id)
             });
         } else {
-            console.log(`cant load theme ${name}`)
+            console.log(`cant load theme ${id}`)
         }
     }
 
     async removeTheme() {
         this.mainTab.sendCode(`LOAD_THEME()`)
-        this.setCurrentTheme("Default")
+        this.setCurrentTheme("0")
     }
 
     async loadCurrentTheme() {

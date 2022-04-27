@@ -43,7 +43,7 @@ function App() {
   const setTheme = () => {
     console.log(selectorTheme)
     fetch(`http://localhost:3000/keyboard/set/${selectorTheme}`).then(()=> {
-      setCurrentTheme(selectorTheme)
+      setCurrentTheme(themes.find((theme)=>theme._id ==selectorTheme))
     }, (error) => {
       console.log(error)
     })
@@ -56,7 +56,7 @@ function App() {
   return (
     <div className="App">
       <h1>Keyboard themes</h1>
-      <p>Current theme is: {currentTheme}</p>
+      <p>Current theme is: {currentTheme.name}</p>
       <Button>
         Remove current theme
       </Button>
@@ -72,11 +72,11 @@ function App() {
       <Form.Select 
         aria-label="Default select example" 
         onChange={handleSelectionChange} 
-        defaultValue={currentTheme}>
+        defaultValue={currentTheme._id}>
 
         {
-          themes.map(name => {
-            return <option value={name}>{name}</option>
+          themes.map(theme => {
+            return <option value={theme._id}>{theme.name}</option>
           })
         }
         </Form.Select>

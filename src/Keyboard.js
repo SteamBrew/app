@@ -66,7 +66,12 @@ class KeyBoardStore {
     }
 
     delete(_id) {
-        delete this.themes[_id]
+        if (this.findById(_id)) {
+            delete this.themes[_id]
+            this.save()
+            return true
+        } 
+        return false
     }
 }
 
@@ -174,6 +179,24 @@ class Keyboard {
         if (this.currentTheme) {
             this.setTheme(this.currentTheme)
         }
+    }
+    
+    deleteTheme(id) {
+        // cant remove default
+        if (id === '0') {
+            return false
+        }
+
+        // cant remove theme in use
+        if (this.currentTheme === id) {
+            return false
+        }
+        const result = this.themeStore.delete(id)
+        if (result) {
+            fs.unlinkSync(`${KEYBOARD_THEME_DIR}/${id}.css`)
+            return true
+        }
+        return false
     }
 }
 

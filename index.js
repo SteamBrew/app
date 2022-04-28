@@ -32,6 +32,17 @@ app.get('/keyboard/get', async (req, res) => {
     })
 })
 
+app.post('/keyboard/delete', async (req, res) => {
+    const {_id} = req.body
+    if (_id) {
+        const result = main.keyboard.deleteTheme(_id)
+        if (result) {
+            return res.send(200)
+        }
+    }
+    res.send(400)
+})
+
 app.get('/keyboard/set/:id', async (req, res) => {
     console.log(req.params)
     const theme = req.params.id

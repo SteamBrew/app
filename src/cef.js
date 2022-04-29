@@ -4,7 +4,6 @@ export async function getAvailableTabs() {
     let jsonRes = []
     try {
         const response = await fetch(`http://${STEAMDECK_IP}:3000/json`);
-        console.log(response)
         jsonRes = response.json();
     } catch (e) {
         console.log(e)

@@ -1,6 +1,7 @@
 # SteamBrew
 
 ## Getting started
+This is still in alpha development and is nowhere near being finished. 
 
 ## Features
 - Custom keyboard themes

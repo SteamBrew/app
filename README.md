@@ -3,6 +3,10 @@
 ## Getting started
 This is still in alpha development and is nowhere near being finished. 
 
+In the settings you will need to enable Developer mode under System and then CEF Remote Debugging under Developer. 
+
+Then go to desktop mode and run the install.sh script
+
 ## Features
 - Custom keyboard themes
 

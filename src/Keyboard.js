@@ -8,16 +8,6 @@ import {
 import { LocalStorageKeys } from './enums.js'
 import localStorage from "./localStorage.js"
 
-const getKeyboardThemes = () => {
-    const KeyboardThemes = []
-    fs.readdirSync(KEYBOARD_THEME_DIR).forEach(file => {
-        if (file.endsWith(".css")) {
-            KeyboardThemes.push(file.substring(0, file.length - ".css".length))
-        }
-    })
-    return KeyboardThemes
-}
-
 class KeyBoardStore {
     // currently using an object using _id for key for easy access by id 
     constructor() {

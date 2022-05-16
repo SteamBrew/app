@@ -6,5 +6,6 @@ export const PageEnum = {
 }
 
 export const LocalStorageKeys = {
-    KEYBOARD_CURRENT_THEME: 'KEYBOARD_CURRENT_THEME'
+    KEYBOARD_CURRENT_THEME: 'KEYBOARD_CURRENT_THEME',
+    REPOSITORIES: 'REPOSITORY_URLS'
 }

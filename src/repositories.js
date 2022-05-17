@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 import { LocalStorageKeys } from "./enums";
 import localStorage from "./localStorage";
 

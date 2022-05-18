@@ -16,7 +16,7 @@ export const RepoType = {
 }
 
 // may need to change this format
-const defaultRepos = [{id: 0, baseUrl: 'https://raw.githubusercontent.com/SteamBrew/official_repository/main/'}]
+const defaultRepos = [{id: "0", baseUrl: 'https://raw.githubusercontent.com/SteamBrew/official_repository/main/'}]
 
 class Cache {
     // TODO add cache expiry?? 
@@ -122,11 +122,14 @@ class Repositories {
 
     // remove and remove any cache for it
     remove(id) {
-        const {location} = this.findById(id)
-        if (location) {
+        const {location, repository} = this.findById(id)
+        if (location != -1) {
             this.repositories.splice(location)
+            this.cache.clearRepo(repository.baseUrl)
             this.save()
+            return true
         }
+        return false
     }
 
     async queryType(type) {
@@ -156,7 +159,7 @@ class Repositories {
 
     // check if info response is valid
     async testRepo(url) {
-        const data = this.queryRepo(url, RepoType.Info)
+        const data = await this.queryRepo(url, RepoType.Info)
         if (data) {
             if (data.version && data.supports) {
                 if (data.version == "v1") {

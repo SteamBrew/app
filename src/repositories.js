@@ -1,38 +1,78 @@
 import fetch from 'node-fetch';
-import { LocalStorageKeys } from "./enums";
-import localStorage from "./localStorage";
+import { v4 as uuidv4 } from 'uuid';
+import { LocalStorageKeys } from "./enums.js";
+import localStorage from "./localStorage.js";
 
 /**
  * TODO
- *  metadata query to each repo
- *  query data type from repo 
- *  get all 
  * 
- *  add repo
- *      must not already exist
- *  remove repo
- *  list repos
- *  test valid repo 
- * 
- *  caching
+ *  save in localstorage
  *  
  */
 
 export const RepoType = {
-    Info: "info.json",
-    Keyboard: "keyboard.json"
+    Info: "info",
+    Keyboard: "keyboard"
 }
 
 // may need to change this format
-const defaultRepos = [{baseUrl: 'https://raw.githubusercontent.com/SteamBrew/official_repository/main/'}]
+const defaultRepos = [{id: 0, baseUrl: 'https://raw.githubusercontent.com/SteamBrew/official_repository/main/'}]
+
+class Cache {
+    // TODO add cache expiry?? 
+    constructor() {
+        this.cache = {}
+    }
+
+    add(repo, key, value) {
+        if (!this.cache[repo]) {
+            this.cache[repo] = {}
+        }
+        this.cache[repo][key] = value
+    }
+
+    get(repo, key) {
+        if (this.cache[repo]) {
+            return this.cache[repo][key]
+        } 
+        return null
+    }
+
+    delete(repo, key) {
+        if (this.cache[repo]) {
+            delete this.cache[repo][key]
+        }
+    }
+
+    clearRepo(repo) {
+        this.cache[repo] = {}
+    }
+}
 
 class Repositories {
     constructor() {
         this.repositories = JSON.parse(localStorage.getItem(LocalStorageKeys.REPOSITORIES)) || defaultRepos
-        this.cache = JSON.parse(localStorage.getItem(LocalStorageKeys.REPOSITORIES_CACHE)) || {}
+        this.cache = new Cache()
     }
 
-    find(url) {
+    save() {
+        localStorage.setItem(LocalStorageKeys.REPOSITORIES, JSON.stringify(this.repositories))
+    }
+
+    async all() {
+        const results = []
+        for (let i = 0; i < this.repositories.length; i++) {
+            const repository = this.repositories[i];
+            const info = await this.queryRepo(repository.baseUrl, RepoType.Info)
+            results.push({
+                ...repository,
+                supports: info.supports
+            })
+        }
+        return results
+    }
+
+    findByUrl(url) {
         for (let i = 0; i < this.repositories.length; i++) {
             const repo = this.repositories[i];
             if (repo.baseUrl === url) {
@@ -48,34 +88,83 @@ class Repositories {
         };
     }
 
-    // add a repository, must not already exist
-    add(url) {
-        if (!this.find(url)) {
-            // test url 
-            this.repositories.push({baseUrl: url})
+    findById(id) {
+        for (let i = 0; i < this.repositories.length; i++) {
+            const repo = this.repositories[i];
+            if (repo.id === id) {
+                return {
+                    location: i,
+                    repository: repo
+                };
+            }
         }
+        return {
+            location: -1,
+            repository: null
+        };
+    }
+
+    // add a repository, must not already exist
+    async add(url) {
+        if (this.findByUrl(url).location === -1) {
+            const isValid = await this.testRepo(url)
+            if (isValid) {
+                this.repositories.push({
+                    id: uuidv4(),
+                    baseUrl: url
+                })
+                this.save()
+                return true
+            }
+        }
+        return false
     }
 
     // remove and remove any cache for it
-    remove(url) {
-        const {location} = this.find(url)
+    remove(id) {
+        const {location} = this.findById(id)
         if (location) {
             this.repositories.splice(location)
+            this.save()
         }
     }
 
-    // query a repository 
-    queryRepo(name, type) {
+    async queryType(type) {
+        const results = []
+        for (let i = 0; i < this.repositories.length; i++) {
+            const repository = this.repositories[i];
+            const response = await this.queryRepo(repository.baseUrl, type)
+            results.push({
+                repository,
+                data: response
+            })
+        }
+        return results
+    }
 
+    // query a repository 
+    async queryRepo(baseUrl, type) {
+        const cacheValue = this.cache.get(baseUrl, type)
+        if (cacheValue) {
+            return cacheValue
+        }
+        const response = await fetch(`${baseUrl}/${type}.json`)
+        const data = await response.json()
+        this.cache.add(baseUrl, type, data)
+        return data
     }
 
     // check if info response is valid
     async testRepo(url) {
-        const response = await fetch(`${url}/info.json`)
-        const data = await response.json()
+        const data = this.queryRepo(url, RepoType.Info)
         if (data) {
-            console.log(data)
+            if (data.version && data.supports) {
+                if (data.version == "v1") {
+                    return true
+                }
+            }
         }
+        return false
     }
 }
 

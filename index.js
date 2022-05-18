@@ -72,6 +72,24 @@ app.post('/keyboard/install', async (req, res) => {
     }
 })
 
+app.get('/repositories/list', async (req, res) => {
+    res.json(await main.repositories.all())
+})
+
+app.post('/repositories/create', async (req, res) => {
+    const {url} = req.body;
+    res.json(await main.repositories.add(url))
+})
+
+app.post('/repositories/delete', async (req, res) => {
+    const {id} = req.body;
+    res.json(main.repositories.remove(id))
+})
+
+app.get('/repositories/get/:type', async (req, res) => {
+    const {type} = req.params;
+    res.json(await main.repositories.queryType(type))
+})
 
 // keyboard theme handling ready
 app.get('/internal/keyboard/ready', async (req, res) => {

@@ -1,10 +1,12 @@
 // encapulates all logic
 import { PageEnum } from './enums.js';
+import Repositories from './repositories.js';
 import TabManager from './tabs/TabManager.js';
 
 class Main {
     constructor() {
         this.tabs = new TabManager() 
+        this.repositories = new Repositories()
     }
 
     async init() {

@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "start:dev": "nodemon index.js",
     "test": "jest"
   },
   "author": "",
@@ -23,6 +25,7 @@
     "@babel/node": "^7.17.10",
     "@babel/preset-env": "^7.17.12",
     "eslint": "^8.13.0",
-    "jest": "^28.1.0"
+    "jest": "^28.1.0",
+    "nodemon": "^2.0.16"
   }
 }

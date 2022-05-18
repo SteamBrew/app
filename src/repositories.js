@@ -1,53 +1,18 @@
 import fetch from 'node-fetch';
 import { v4 as uuidv4 } from 'uuid';
+import Cache from './cache.js';
 import { LocalStorageKeys } from "./enums.js";
 import localStorage from "./localStorage.js";
 
-/**
- * TODO
- * 
- *  save in localstorage
- *  
- */
-
 export const RepoType = {
     Info: "info",
-    Keyboard: "keyboard"
+    Keyboard: "keyboard",
+    Plugin: "plugin",
+    Soundpack: "soundpack",
+    UI: "ui",
 }
 
-// may need to change this format
 const defaultRepos = [{id: "0", baseUrl: 'https://raw.githubusercontent.com/SteamBrew/official_repository/main/'}]
-
-class Cache {
-    // TODO add cache expiry?? 
-    constructor() {
-        this.cache = {}
-    }
-
-    add(repo, key, value) {
-        if (!this.cache[repo]) {
-            this.cache[repo] = {}
-        }
-        this.cache[repo][key] = value
-    }
-
-    get(repo, key) {
-        if (this.cache[repo]) {
-            return this.cache[repo][key]
-        } 
-        return null
-    }
-
-    delete(repo, key) {
-        if (this.cache[repo]) {
-            delete this.cache[repo][key]
-        }
-    }
-
-    clearRepo(repo) {
-        this.cache[repo] = {}
-    }
-}
 
 class Repositories {
     constructor() {
@@ -120,12 +85,11 @@ class Repositories {
         return false
     }
 
-    // remove and remove any cache for it
     remove(id) {
         const {location, repository} = this.findById(id)
         if (location != -1) {
             this.repositories.splice(location)
-            this.cache.clearRepo(repository.baseUrl)
+            this.cache.clearNamespace(repository.baseUrl)
             this.save()
             return true
         }
@@ -145,7 +109,6 @@ class Repositories {
         return results
     }
 
-    // query a repository 
     async queryRepo(baseUrl, type) {
         const cacheValue = this.cache.get(baseUrl, type)
         if (cacheValue) {
@@ -157,7 +120,6 @@ class Repositories {
         return data
     }
 
-    // check if info response is valid
     async testRepo(url) {
         const data = await this.queryRepo(url, RepoType.Info)
         if (data) {

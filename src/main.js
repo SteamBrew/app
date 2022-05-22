@@ -1,6 +1,6 @@
 // encapulates all logic
 import { PageEnum } from './enums.js';
-import Repositories from './repositories.js';
+import Repositories from './Repositories.js';
 import TabManager from './tabs/TabManager.js';
 
 class Main {

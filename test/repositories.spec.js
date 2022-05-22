@@ -1,4 +1,4 @@
-import Repositories from "../src/repositories";
+import Repositories from "../src/Repositories";
 
 describe('Respositories', () => {
     

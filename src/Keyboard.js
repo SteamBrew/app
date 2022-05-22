@@ -113,6 +113,7 @@ class Keyboard {
      * @param {Object} info.url
      *  
      */
+    // @deprecated
     async installTheme(info) {
         const {_id, name, url} = info
         let css;
@@ -171,6 +172,7 @@ class Keyboard {
         }
     }
     
+    // @deprecated
     deleteTheme(id) {
         // cant remove default
         if (id === '0') {

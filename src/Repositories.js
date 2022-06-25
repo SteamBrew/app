@@ -1,19 +1,17 @@
 import fetch from 'node-fetch';
 import { v4 as uuidv4 } from 'uuid';
 import Cache from './cache.js';
-import { LocalStorageKeys } from "./enums.js";
+import { CustomTypes, LocalStorageKeys } from "./enums.js";
 import localStorage from "./localStorage.js";
 
 export const RepoType = {
     Info: "info",
-    Keyboard: "keyboard",
-    Plugin: "plugin",
-    Soundpack: "soundpack",
-    UI: "ui",
+    ...CustomTypes
 }
 
 const defaultRepos = [{id: "0", baseUrl: 'https://raw.githubusercontent.com/SteamBrew/official_repository/main/'}]
 
+// TODO fake repo called "local" with all manually installed themes
 class Repositories {
     constructor() {
         this.repositories = JSON.parse(localStorage.getItem(LocalStorageKeys.REPOSITORIES)) || defaultRepos

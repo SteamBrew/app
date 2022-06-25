@@ -2,9 +2,7 @@ import fs from 'fs'
 import fetch from 'node-fetch'
 import path from 'path'
 import { v4 } from 'uuid'
-import {
-    KEYBOARD_STYLE_ID, KEYBOARD_THEME_DB, KEYBOARD_THEME_DIR, __dirname
-} from "./constants.js"
+import { CUSTOM_DATA_DIR, KEYBOARD_STYLE_ID, KEYBOARD_THEME_DB, __dirname } from "./constants.js"
 import { LocalStorageKeys } from './enums.js'
 import localStorage from "./localStorage.js"
 
@@ -151,7 +149,7 @@ class Keyboard {
     async setTheme(id) {
         if (id && this.themeStore.findById(id)) {
             // TODO load theme css
-            fs.readFile(KEYBOARD_THEME_DIR+"/"+id+".css", 'utf-8', (err, data) => {
+            fs.readFile(CUSTOM_DATA_DIR+"/"+id+".css", 'utf-8', (err, data) => {
                 if (err) throw err;
                 this.mainTab.sendCode(`LOAD_THEME(\`${data}\`)`)
                 this.setCurrentTheme(id)
@@ -185,7 +183,7 @@ class Keyboard {
         }
         const result = this.themeStore.delete(id)
         if (result) {
-            fs.unlinkSync(`${KEYBOARD_THEME_DIR}/${id}.css`)
+            fs.unlinkSync(`${CUSTOM_DATA_DIR}/${id}.css`)
             return true
         }
         return false
